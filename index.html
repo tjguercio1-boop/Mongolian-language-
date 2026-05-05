@@ -13,22 +13,22 @@
         .day-scroller::-webkit-scrollbar { display: none; }
         .day-card { min-width: 45px; height: 45px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #e2e8f0; cursor: pointer; transition: 0.3s; color: #64748b; }
         .day-card.active { background: var(--a); color: white; border-color: var(--a); transform: scale(1.1); box-shadow: 0 4px 8px rgba(242, 161, 84, 0.4); }
-        .day-card.completed { border: 2px solid var(--s); }
+        .day-card.completed { border: 2px solid var(--s); color: var(--s); }
         .nav-tabs { display: flex; padding: 0 15px 15px; gap: 10px; }
         .tab { flex: 1; padding: 12px; background: #e2e8f0; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; font-size: 14px; }
         .tab.active { background: var(--p); color: white; }
         .main-card { flex-grow: 1; background: white; margin: 0 15px 15px; border-radius: 24px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; position: relative; overflow: hidden; }
-        .progress-section { margin-bottom: 15px; }
-        .progress-label { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #94a3b8; display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .progress-section { margin-bottom: 15px; background: #f1f5f9; padding: 10px; border-radius: 12px; }
+        .progress-label { font-size: 9px; font-weight: 800; text-transform: uppercase; color: #64748b; display: flex; justify-content: space-between; margin-bottom: 4px; }
         .progress-container { width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
         .progress-bar { height: 100%; background: var(--s); width: 0%; transition: 0.4s; }
         .course-bar { background: var(--p); }
         .word-list { overflow-y: auto; flex-grow: 1; padding-bottom: 20px; }
         .word-item { padding: 12px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; }
-        .cyr { font-size: 21px; font-weight: bold; color: var(--p); }
-        .lat { font-size: 13px; color: #64748b; }
+        .cyr { font-size: 20px; font-weight: bold; color: var(--p); }
+        .lat { font-size: 12px; color: #64748b; }
         .phon { font-size: 10px; color: var(--a); font-family: monospace; font-weight: bold; text-transform: uppercase; }
-        .eng { font-size: 14px; font-style: italic; color: #475569; }
+        .eng { font-size: 13px; font-style: italic; color: #475569; }
         .play-btn { background: #f1f5f9; border: none; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; font-size: 18px; }
         .option { width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 16px; border: 2px solid #f1f5f9; background: white; text-align: left; transition: 0.2s; cursor: pointer; }
         .option .opt-cyr { font-size: 18px; font-weight: bold; display: block; }
@@ -41,7 +41,7 @@
 <div class="app-container">
     <header>
         <h1 style="margin:0; font-size: 20px;">🏹 Darhad Field Lab</h1>
-        <div id="day-title" style="font-size: 11px; text-transform: uppercase; margin-top: 5px;">Field Readiness Pro</div>
+        <div id="day-title" style="font-size: 11px; text-transform: uppercase; margin-top: 5px;">Researcher Master Build</div>
     </header>
     <div class="day-scroller" id="dayPicker"></div>
     <div class="nav-tabs">
@@ -51,9 +51,9 @@
     <div class="main-card" id="main-card">
         <div id="progress-area" style="display:none;">
             <div class="progress-section">
-                <div class="progress-label"><span>Daily Progress</span><span id="day-pct">0%</span></div>
+                <div class="progress-label"><span>Session Progress</span><span id="day-pct">0%</span></div>
                 <div class="progress-container"><div class="progress-bar" id="pBar"></div></div>
-                <div class="progress-label"><span>Course Mastery</span><span id="course-pct">0%</span></div>
+                <div class="progress-label"><span>Expedition Mastery</span><span id="course-pct">0%</span></div>
                 <div class="progress-container"><div class="progress-bar course-bar" id="cBar"></div></div>
             </div>
         </div>
@@ -64,29 +64,30 @@
 <script>
 const syllabus = {
     1: { t: "Day 1: Letters A-П", w: [
-        {c: "А а", l: "A", p: "ah", e: "A as in father"}, {c: "Б б", l: "B", p: "beh", e: "B as in ball"}, {c: "В в", l: "V", p: "wah", e: "W as in water"}, {c: "Г г", l: "G", p: "gah", e: "G as in go"}, {c: "Д д", l: "D", p: "deh", e: "D as in dog"}, {c: "Е е", l: "Ye", p: "yeh", e: "YE as in yes"}, {c: "Ё ё", l: "Yo", p: "yaw", e: "YO as in yore"}, {c: "Ж ж", l: "J", p: "jah", e: "J as in just"}, {c: "З з", l: "Z", p: "sah", e: "S as in sun"}, {c: "И и", l: "I", p: "ee", e: "EE as in see"}, {c: "Й й", l: "I", p: "ee", e: "Short I (boy)"}, {c: "К к", l: "K", p: "kah", e: "K as in kite"}, {c: "Л л", l: "L", p: "ul", e: "L as in lamp"}, {c: "М м", l: "M", p: "mah", e: "M as in map"}, {c: "Н н", l: "N", p: "nah", e: "N as in net"}, {c: "О о", l: "O", p: "aw", e: "O as in law"}, {c: "Ө ө", l: "Ö", p: "uh", e: "U as in urn"}, {c: "П п", l: "P", p: "peh", e: "P as in pet"}
+        {c: "А а", l: "A", p: "ah", e: "A as in father"}, {c: "Б б", l: "B", p: "beh", e: "B as in ball"}, {c: "В в", l: "V", p: "wah", e: "W as in water"}, {c: "Г г", l: "G", p: "gah", e: "G as in go"}, {c: "Д д", l: "D", p: "deh", e: "D as in dog"}, {c: "Е е", l: "Ye", p: "yeh", e: "YE as in yes"}, {c: "Ё ё", l: "Yo", p: "yaw", e: "YO as in yore"}, {c: "Ж ж", l: "J", p: "jah", e: "J as in just"}, {c: "З з", l: "Z", p: "sah", e: "S as in sun"}, {c: "И и", l: "I", p: "ee", e: "EE as in see"}, {c: "Й й", l: "Short I", p: "ee", e: "Y as in boy"}, {c: "К к", l: "K", p: "kah", e: "K as in kite"}, {c: "Л л", l: "L", p: "ul", e: "L as in lamp"}, {c: "М м", l: "M", p: "mah", e: "M as in map"}, {c: "Н н", l: "N", p: "nah", e: "N as in net"}, {c: "О о", l: "O", p: "aw", e: "O as in law"}, {c: "Ө ө", l: "Ö", p: "uh", e: "U as in urn"}, {c: "П п", l: "P", p: "peh", e: "P as in pet"}
     ]},
     2: { t: "Day 2: Letters Р-Я", w: [
-        {c: "Р р", l: "R", p: "er", e: "R as in rolled"}, {c: "С с", l: "S", p: "sah", e: "S as in set"}, {c: "Т т", l: "T", p: "teh", e: "T as in top"}, {c: "У у", l: "U", p: "oo", e: "U as in moon"}, {c: "Ү ү", l: "Ü", p: "uuee", e: "U as in French 'tu'"}, {c: "Ф ф", l: "F", p: "feh", e: "F as in fast"}, {c: "Х х", l: "Kh", p: "khah", e: "CH as in Loch"}, {c: "Ц ц", l: "Ts", p: "tsah", e: "TS as in cats"}, {c: "Ч ч", l: "Ch", p: "chah", e: "CH as in chip"}, {c: "Ш ш", l: "Sh", p: "shah", e: "SH as in ship"}, {c: "Щ щ", l: "Shch", p: "sh-tch", e: "SHCH (Russian words)"}, {c: "Ъ ъ", l: "Hard", p: "---", e: "Hard Sign (no sound)"}, {c: "Ы ы", l: "Y", p: "ee", e: "Y as in silly"}, {c: "Ь ь", l: "Soft", p: "---", e: "Soft Sign (no sound)"}, {c: "Э э", l: "E", p: "ay", e: "E as in egg"}, {c: "Ю ю", l: "Yu", p: "yoo", e: "YU as in universe"}, {c: "Я я", l: "Ya", p: "yah", e: "YA as in yard"}
+        {c: "Р р", l: "R", p: "er", e: "R as in rolled"}, {c: "С с", l: "S", p: "sah", e: "S as in set"}, {c: "Т т", l: "T", p: "teh", e: "T as in top"}, {c: "У у", l: "U", p: "oo", e: "U as in moon"}, {c: "Ү ү", l: "Ü", p: "uuee", e: "U as in French 'tu'"}, {c: "Ф ф", l: "F", p: "feh", e: "F as in fast"}, {c: "Х х", l: "Kh", p: "khah", e: "CH as in Loch"}, {c: "Ц ц", l: "Ts", p: "tsah", e: "TS as in cats"}, {c: "Ч ч", l: "Ch", p: "chah", e: "CH as in chip"}, {c: "Ш ш", l: "Sh", p: "shah", e: "SH as in ship"}, {c: "Щ щ", l: "Shch", p: "sh-tch", e: "SHCH (compound)"}, {c: "Ъ ъ", l: "Hard Sign", p: "---", e: "Hard Sign (no sound)"}, {c: "Ы ы", l: "Y", p: "ee", e: "Y as in silly"}, {c: "Ь ь", l: "Soft Sign", p: "---", e: "Soft Sign (no sound)"}, {c: "Э э", l: "E", p: "ay", e: "E as in egg"}, {c: "Ю ю", l: "Yu", p: "yoo", e: "YU as in universe"}, {c: "Я я", l: "Ya", p: "yah", e: "YA as in yard"}
     ]},
     3: { t: "Day 3: Numbers 0-20", w: [
-        {c: "Тэг", l: "0", p: "teg", e: "Zero"}, {c: "Нэг", l: "1", p: "neg", e: "One"}, {c: "Хоёр", l: "2", p: "hoy or", e: "Two"}, {c: "Гурав", l: "3", p: "goor av", e: "Three"}, {c: "Дөрөв", l: "4", p: "door uv", e: "Four"}, {c: "Тав", l: "5", p: "tav", e: "Five"}, {c: "Зургаа", l: "6", p: "soor gah", e: "Six"}, {c: "Долоо", l: "7", p: "doh loh", e: "Seven"}, {c: "Найм", l: "8", p: "nyme", e: "Eight"}, {c: "Ес", l: "9", p: "yuss", e: "Nine"}, {c: "Арав", l: "10", p: "ar av", e: "Ten"}, {c: "Арван нэг", l: "11", p: "ar van neg", e: "Eleven"}, {c: "Арван хоёр", l: "12", p: "ar van hoy or", e: "Twelve"}, {c: "Арван гурав", l: "13", p: "ar van goor av", e: "Thirteen"}, {c: "Арван дөрөв", l: "14", p: "ar van door uv", e: "Fourteen"}, {c: "Арван тав", l: "15", p: "ar van tav", e: "Fifteen"}, {c: "Арван зургаа", l: "16", p: "ar van soor gah", e: "Sixteen"}, {c: "Арван долоо", l: "17", p: "ar van doh loh", e: "Seventeen"}, {c: "Арван найм", l: "18", p: "ar van nyme", e: "Eighteen"}, {c: "Арван ес", l: "19", p: "ar van yuss", e: "Nineteen"}, {c: "Хори", l: "20", p: "hor ee", e: "Twenty"}
+        {c: "Тэг", l: "0 (teg)", p: "teg", e: "Zero"}, {c: "Нэг", l: "1 (neg)", p: "neg", e: "One"}, {c: "Хоёр", l: "2 (hoyor)", p: "hoy or", e: "Two"}, {c: "Гурав", l: "3 (gurav)", p: "goor av", e: "Three"}, {c: "Дөрөв", l: "4 (dorov)", p: "door uv", e: "Four"}, {c: "Тав", l: "5 (tav)", p: "tav", e: "Five"}, {c: "Зургаа", l: "6 (zurgaa)", p: "soor gah", e: "Six"}, {c: "Долоо", l: "7 (doloo)", p: "doh loh", e: "Seven"}, {c: "Найм", l: "8 (naim)", p: "nyme", e: "Eight"}, {c: "Ес", l: "9 (yos)", p: "yuss", e: "Nine"}, {c: "Арав", l: "10 (arav)", p: "ar av", e: "Ten"}, {c: "Арван нэг", l: "11 (arvan neg)", p: "ar van neg", e: "Eleven"}, {c: "Арван хоёр", l: "12 (arvan hoyor)", p: "ar van hoy or", e: "Twelve"}, {c: "Арван гурав", l: "13 (arvan gurav)", p: "ar van goor av", e: "Thirteen"}, {c: "Арван дөрөв", l: "14 (arvan dorov)", p: "ar van door uv", e: "Fourteen"}, {c: "Арван тав", l: "15 (arvan tav)", p: "ar van tav", e: "Fifteen"}, {c: "Арван зургаа", l: "16 (arvan zurgaa)", p: "ar van soor gah", e: "Sixteen"}, {c: "Арван долоо", l: "17 (arvan doloo)", p: "ar van doh loh", e: "Seventeen"}, {c: "Арван найм", l: "18 (arvan naim)", p: "ar van nyme", e: "Eighteen"}, {c: "Арван ес", l: "19 (arvan yos)", p: "ar van yuss", e: "Nineteen"}, {c: "Хори", l: "20 (hori)", p: "hor ee", e: "Twenty"}
     ]},
-    4: { t: "Day 4: Large Numbers", w: [
-        {c: "Гуч", l: "30", p: "goots", e: "Thirty"}, {c: "Дөч", l: "40", p: "dotch", e: "Forty"}, {c: "Тавь", l: "50", p: "tav ee", e: "Fifty"}, {c: "Жат", l: "60", p: "jat", e: "Sixty"}, {c: "Дал", l: "70", p: "dal", e: "Seventy"}, {c: "Ная", l: "80", p: "nye", e: "Eighty"}, {c: "Ер", l: "90", p: "yer", e: "Ninety"}, {c: "Зуу", l: "100", p: "soo", e: "One hundred"}, {c: "Хоёр зуу", l: "200", p: "hoy or soo", e: "Two hundred"}, {c: "Мянга", l: "1000", p: "myang ah", e: "One thousand"}, {c: "Таван мянга", l: "5000", p: "tav un myang ah", e: "Five thousand"}, {c: "Арван мянга", l: "10000", p: "ar van myang ah", e: "Ten thousand"}, {c: "Хэд?", l: "Hed?", p: "hed", e: "How many?"}, {c: "Нэмэх", l: "Plus", p: "nem ah", e: "Plus"}, {c: "Хасах", l: "Minus", p: "has ah", e: "Minus"}, {c: "Тэнцүү", l: "Equal", p: "ten tsoo", e: "Equal"}, {c: "Мөнгө", l: "Money", p: "moon guh", e: "Money"}, {c: "Төгрөг", l: "Tugrik", p: "toog roog", e: "Tugrik"}
+    4: { t: "Day 4: Logic & Currency", w: [
+        {c: "Гуч", l: "30 (guch)", p: "goots", e: "Thirty"}, {c: "Дөч", l: "40 (doch)", p: "dotch", e: "Forty"}, {c: "Тавь", l: "50 (tavi)", p: "tav ee", e: "Fifty"}, {c: "Жат", l: "60 (jat)", p: "jat", e: "Sixty"}, {c: "Дал", l: "70 (dal)", p: "dal", e: "Seventy"}, {c: "Ная", l: "80 (naya)", p: "nye", e: "Eighty"}, {c: "Ер", l: "90 (yer)", p: "yer", e: "Ninety"}, {c: "Зуу", l: "100 (zuu)", p: "soo", e: "One hundred"}, {c: "Мянга", l: "1000 (myanga)", p: "myang ah", e: "One thousand"}, {c: "Төгрөг", l: "Tugrik", p: "toog roog", e: "MNT Currency"}, {c: "Хэд?", l: "Hed?", p: "hed", e: "How much?"}, {c: "Үнэтэй", l: "Expensive", p: "oon ay tay", e: "Expensive"}, {c: "Хямдхан", l: "Cheap", p: "hyam don", e: "Cheap"}, {c: "Хагас", l: "Half", p: "ha gas", e: "Half"}, {c: "Их", l: "Much", p: "ikh", e: "A lot"}, {c: "Бага", l: "Little", p: "bah gah", e: "A little"}, {c: "Нэмэх", l: "Plus", p: "nem ah", e: "Plus"}, {c: "Хасах", l: "Minus", p: "has ah", e: "Minus"}, {c: "Тэнцүү", l: "Equals", p: "ten tsoo", e: "Equals"}, {c: "Дэлгүүр", l: "Store", p: "del goor", e: "Store"}
+    ]},
+    5: { t: "Day 5: Social Protocol", w: [
+        {c: "Сайн байна уу?", l: "Hello", p: "sign bay no", e: "Hello (Formal)"}, {c: "Баярлалаа", l: "Thanks", p: "by ar la la", e: "Thank you"}, {c: "За", l: "Okay", p: "sah", e: "Okay"}, {c: "Үгүй", l: "No", p: "oog way", e: "No"}, {c: "Мори уя?", l: "Dog safe?", p: "mor ee oy", e: "Is the dog safe?"}, {c: "Би Америк хүн", l: "American", p: "bee amerk hoon", e: "I am American"}, {c: "Таны нэр хэн бэ?", l: "Name?", p: "tah nee ner hen bay", e: "What is your name?"}, {c: "Миний нэр...", l: "My name...", p: "min ee ner", e: "My name is..."}, {c: "Ойлгосон", l: "Understand", p: "oil go sahn", e: "I understand"}, {c: "Ойлгосонгүй", l: "Don't understand", p: "oil go song gway", e: "I don't understand"}, {c: "Дахин хэлнэ үү?", l: "Repeat?", p: "dah hin hel nay oo", e: "Can you repeat?"}, {c: "Баяртай", l: "Goodbye", p: "by ar tie", e: "Goodbye"}, {c: "Зүгээр", l: "No problem", p: "su geer", e: "No problem"}, {c: "Туслаарай!", l: "Help!", p: "toos lah ray", e: "Help!"}
     ]},
     12: { t: "Day 12: Taimen Monitoring", w: [
-        {c: "Тул", l: "Taimen", p: "tool", e: "Taimen"}, {c: "Урт", l: "Length", p: "oort", e: "Length"}, {c: "Жин", l: "Weight", p: "jin", e: "Weight"}, {c: "Тэмдэг", l: "Tag", p: "tem deg", e: "Tag"}, {c: "Уус", l: "Redd", p: "ooss", e: "Redd"}, {c: "Тоолох", l: "Count", p: "toh loh", e: "To count"}, {c: "Хэмжих", l: "Measure", p: "hem ji", e: "To measure"}, {c: "Биологич", l: "Biologist", p: "bee o lo gist", e: "Biologist"}, {c: "Гүн", l: "Depth", p: "goon", e: "Depth"}, {c: "Урсгал", l: "Flow", p: "oors gal", e: "Flow"}, {c: "Түрс", l: "Eggs", p: "toorss", e: "Eggs"}, {c: "Зураг", l: "Photo", p: "soor ag", e: "Photo"}, {c: "Үржил", l: "Spawning", p: "oor jill", e: "Spawning"}, {c: "Хамгаалах", l: "Protect", p: "ham gah lah", e: "To protect"}, {c: "Эрэг", l: "Bank", p: "er eg", e: "Bank"}, {c: "Бэлчир", l: "Confluence", p: "bel tchir", e: "Confluence"}, {c: "Замаг", l: "Algae", p: "sah mag", e: "Algae"}, {c: "Идэш", l: "Prey", p: "ee desh", e: "Prey"}, {c: "Амьд", l: "Alive", p: "ah mid", e: "Alive"}, {c: "Үхсэн", l: "Dead", p: "ooh ksen", e: "Dead"}, {c: "Завь", l: "Boat", p: "savy", e: "Boat"}, {c: "Уурга", l: "Rod", p: "oor gah", e: "Rod"}, {c: "Дэгээ", l: "Hook", p: "de gay", e: "Hook"}, {c: "Тор", l: "Net", p: "tor", e: "Net"}, {c: "Шошго", l: "Label", p: "shoh shgo", e: "Label"}, {c: "Мэдээлэл", l: "Data", p: "me day lel", e: "Data"}, {c: "Дээж", l: "Sample", p: "day j", e: "Sample"}, {c: "Гол", l: "River", p: "goal", e: "River"}
+        {c: "Тул", l: "Taimen", p: "tool", e: "Taimen"}, {c: "Урт", l: "Length", p: "oort", e: "Length"}, {c: "Жин", l: "Weight", p: "jin", e: "Weight"}, {c: "Тэмдэг", l: "Tag", p: "tem deg", e: "Tag/Marker"}, {c: "Уус", l: "Redd", p: "ooss", e: "Spawning bed"}, {c: "Тоолох", l: "Count", p: "toh loh", e: "To count"}, {c: "Хэмжих", l: "Measure", p: "hem ji", e: "To measure"}, {c: "Биологич", l: "Biologist", p: "bee o lo gist", e: "Biologist"}, {c: "Гүн", l: "Depth", p: "goon", e: "Depth"}, {c: "Урсгал", l: "Flow", p: "oors gal", e: "Current/Flow"}, {c: "Түрс", l: "Eggs", p: "toorss", e: "Eggs"}, {c: "Зураг", l: "Photo", p: "soor ag", e: "Photo"}, {c: "Эрэг", l: "Bank", p: "er eg", e: "River bank"}, {c: "Бэлчир", l: "Confluence", p: "bel tchir", e: "Confluence"}, {c: "Дээж", l: "Sample", p: "day j", e: "Sample"}, {c: "Хамгаалах", l: "Protect", p: "ham gah lah", e: "To protect"}, {c: "Завь", l: "Boat", p: "savy", e: "Boat"}, {c: "Уурга", l: "Rod", p: "oor gah", e: "Rod"}, {c: "Дэгээ", l: "Hook", p: "de gay", e: "Hook"}, {c: "Тор", l: "Net", p: "tor", e: "Net"}
     ]},
     13: { t: "Day 13: Drone Tech", w: [
-        {c: "Дрон", l: "Drone", p: "drone", e: "Drone"}, {c: "Нисэх", l: "Fly", p: "nis eh", e: "Fly"}, {c: "Батарей", l: "Battery", p: "bat a ray", e: "Battery"}, {c: "Цэнэглэх", l: "Charge", p: "tse neg leh", e: "Charge"}, {c: "Удирдах", l: "Control", p: "oo dir dah", e: "Control"}, {c: "Дохио", l: "Signal", p: "doh hyo", e: "Signal"}, {c: "Камер", l: "Camera", p: "kah mer", e: "Camera"}, {c: "Видео", l: "Video", p: "vid yo", e: "Video"}, {c: "Өндөр", l: "High", p: "oon door", e: "Altitude"}, {c: "Нам", l: "Low", p: "nahm", e: "Low"}, {c: "Сэнс", l: "Propeller", p: "senss", e: "Propeller"}, {c: "ГПС", l: "GPS", p: "gee pee ess", e: "GPS"}, {c: "Цэг", l: "Point", p: "tsegg", e: "Point"}, {c: "Автомат", l: "Auto", p: "av to maht", e: "Auto"}, {c: "Унах", l: "Crash", p: "oon ah", e: "Crash"}, {c: "Эвдрэх", l: "Break", p: "eb dreh", e: "Break"}, {c: "Засах", l: "Fix", p: "sas ah", e: "Fix"}, {c: "Хурд", l: "Speed", p: "hoord", e: "Speed"}, {c: "Цэлмэг", l: "Clear", p: "tsell meg", e: "Clear sky"}, {c: "Үүл", l: "Cloud", p: "ool", e: "Cloud"}, {c: "Буух", l: "Land", p: "booh", e: "Land"}, {c: "Хөөрөх", l: "Takeoff", p: "hoo ruh", e: "Takeoff"}, {c: "Аюулгүй", l: "Safe", p: "ay ool gway", e: "Safe"}, {c: "Зөвшөөрөл", l: "Permit", p: "sov shoor ol", e: "Permit"}, {c: "Салхи", l: "Wind", p: "sal hee", e: "Wind"}, {c: "Дарга", l: "Chief", p: "dar ga", e: "Chief"}, {c: "Гэртээ", l: "Home", p: "ger tay", e: "Return home"}, {c: "Хүчтэй", l: "Strong", p: "hookh tay", e: "Strong"}, {c: "Сул", l: "Weak", p: "sool", e: "Weak"}, {c: "Хэмжээ", l: "Size", p: "hem jay", e: "Size"}
+        {c: "Дрон", l: "Drone", p: "drone", e: "Drone"}, {c: "Нисэх", l: "Fly", p: "nis eh", e: "To fly"}, {c: "Батарей", l: "Battery", p: "bat a ray", e: "Battery"}, {c: "Цэнэглэх", l: "Charge", p: "tse neg leh", e: "To charge"}, {c: "Удирдах", l: "Control", p: "oo dir dah", e: "To control"}, {c: "Дохио", l: "Signal", p: "doh hyo", e: "Signal"}, {c: "Камер", l: "Camera", p: "kah mer", e: "Camera"}, {c: "Өндөр", l: "Altitude", p: "oon door", e: "High"}, {c: "Нам", l: "Low", p: "nahm", e: "Low"}, {c: "Буух", l: "Land", p: "booh", e: "To land"}, {c: "Хөөрөх", l: "Takeoff", p: "hoo ruh", e: "Takeoff"}, {c: "Сэнс", l: "Propeller", p: "senss", e: "Propeller"}, {c: "ГПС", l: "GPS", p: "gee pee ess", e: "GPS"}, {c: "Цэг", l: "Point", p: "tsegg", e: "Way point"}, {c: "Засах", l: "Fix", p: "sas ah", e: "To fix"}, {c: "Аюулгүй", l: "Safe", p: "ay ool gway", e: "Safe"}, {c: "Салхи", l: "Wind", p: "sal hee", e: "Wind"}, {c: "Бороо", l: "Rain", p: "boh roh", e: "Rain"}
     ]}
 };
 
-// Fill in other days with standard field vocab
-for(let i=5; i<=21; i++) {
-    if(!syllabus[i]) syllabus[i] = { t: `Day ${i}: Field Ops`, w: Array(30).fill({c: "...", l: "...", p: "...", e: "Vocabulary loading..."}) };
-}
+// Fill in placeholders with field relevant data
+for(let i=1; i<=21; i++) { if(!syllabus[i]) syllabus[i] = { t: `Day ${i}: Field Ops`, w: Array(20).fill({c: "...", l: "...", p: "...", e: "Vocabulary loading..."}) }; }
 
 let completedDays = JSON.parse(localStorage.getItem('darhad_complete')) || [];
 let currentDay = parseInt(localStorage.getItem('darhad_day')) || 1;
@@ -101,95 +102,55 @@ function renderDayPicker() {
         const isComplete = completedDays.includes(i);
         d.className = `day-card ${i === currentDay ? 'active' : ''} ${isComplete ? 'completed' : ''}`;
         d.innerText = i;
-        d.onclick = () => { 
-            currentDay = i; 
-            localStorage.setItem('darhad_day', i); 
-            switchMode('learn'); 
-            renderDayPicker(); 
-        };
+        d.onclick = () => { currentDay = i; localStorage.setItem('darhad_day', i); switchMode('learn'); renderDayPicker(); };
         p.appendChild(d);
         if(i === currentDay) d.scrollIntoView({ behavior: 'smooth', inline: 'center' });
     }
 }
 
 function switchMode(m) {
-    mode = m;
-    document.getElementById('tab-learn').classList.toggle('active', m === 'learn');
+    mode = m; document.getElementById('tab-learn').classList.toggle('active', m === 'learn');
     document.getElementById('tab-quiz').classList.toggle('active', m === 'quiz');
     document.getElementById('progress-area').style.display = (m === 'quiz') ? 'block' : 'none';
-    if(m === 'quiz') { 
-        quizPool = [...(syllabus[currentDay]?.w || syllabus[1].w)].sort(() => Math.random() - 0.5);
-        score = { correct: 0, total: quizPool.length };
-        updateProgress();
-    }
+    if(m === 'quiz') { quizPool = [...(syllabus[currentDay]?.w || syllabus[1].w)].sort(() => Math.random() - 0.5); score = { correct: 0, total: quizPool.length }; updateProgress(); }
     render();
 }
 
 function updateProgress() {
     const dPct = Math.round(((score.total - quizPool.length) / score.total) * 100);
     const cPct = Math.round((completedDays.length / 21) * 100);
-    document.getElementById('pBar').style.width = `${dPct}%`;
-    document.getElementById('day-pct').innerText = `${dPct}%`;
-    document.getElementById('cBar').style.width = `${cPct}%`;
-    document.getElementById('course-pct').innerText = `${cPct}%`;
+    document.getElementById('pBar').style.width = `${dPct}%`; document.getElementById('day-pct').innerText = `${dPct}%`;
+    document.getElementById('cBar').style.width = `${cPct}%`; document.getElementById('course-pct').innerText = `${cPct}%`;
 }
 
 function render() {
-    const area = document.getElementById('content-area'); 
-    const dayData = syllabus[currentDay] || syllabus[1];
+    const area = document.getElementById('content-area'); const dayData = syllabus[currentDay] || syllabus[1];
     document.getElementById('day-title').innerText = dayData.t;
-    if(mode === 'learn') {
-        area.innerHTML = `<div class="word-list">` + dayData.w.map(w => `
-            <div class="word-item"><div><div class="cyr">${w.c}</div><div class="lat">${w.l}</div><div class="phon">${w.p}</div><div class="eng">${w.e}</div></div><button class="play-btn" onclick="speak('${w.p}')">▶</button></div>`).join('') + `</div>`;
+    if(mode === 'learn') { area.innerHTML = `<div class="word-list">` + dayData.w.map(w => `
+        <div class="word-item"><div><div class="cyr">${w.c}</div><div class="lat">${w.l}</div><div class="phon">${w.p}</div><div class="eng">${w.e}</div></div><button class="play-btn" onclick="speak('${w.p}')">▶</button></div>`).join('') + `</div>`;
     } else { renderQuiz(); }
 }
 
 function renderQuiz() {
     const area = document.getElementById('content-area');
-    if(!quizPool.length) { 
-        if(!completedDays.includes(currentDay)) { completedDays.push(currentDay); localStorage.setItem('darhad_complete', JSON.stringify(completedDays)); renderDayPicker(); }
-        area.innerHTML = `<div style="text-align:center; padding:40px;"><h2>Expedition Mastery!</h2><button class="option" onclick="switchMode('quiz')"><span class="opt-cyr" style="text-align:center; display:block;">Restart Day</span></button></div>`; 
-        updateProgress();
-        return; 
-    }
+    if(!quizPool.length) { if(!completedDays.includes(currentDay)) { completedDays.push(currentDay); localStorage.setItem('darhad_complete', JSON.stringify(completedDays)); renderDayPicker(); }
+        area.innerHTML = `<div style="text-align:center; padding:40px;"><h2>Expedition Success!</h2><button class="option" onclick="switchMode('quiz')"><span class="opt-cyr" style="text-align:center; display:block;">Restart Day</span></button></div>`; updateProgress(); return; }
     const cur = quizPool[quizPool.length - 1]; 
-    
-    // Strict Distractor Logic
-    let dPool;
-    if (currentDay <= 2) { 
-        dPool = [...syllabus[1].w, ...syllabus[2].w]; // Only Letters
-    } else if (currentDay === 3 || currentDay === 4) {
-        dPool = [...syllabus[3].w, ...syllabus[4].w]; // Only Numbers
-    } else {
-        dPool = Object.values(syllabus).flatMap(d => d.w);
-    }
-
+    let dPool = (currentDay <= 2) ? [...syllabus[1].w, ...syllabus[2].w] : (currentDay <= 4) ? [...syllabus[3].w, ...syllabus[4].w] : Object.values(syllabus).flatMap(d => d.w);
     let opts = [cur];
-    while(opts.length < 4) { 
-        let r = dPool[Math.floor(Math.random()*dPool.length)]; 
-        if(!opts.find(o => o.c === r.c)) opts.push(r); 
-    }
+    while(opts.length < 4) { let r = dPool[Math.floor(Math.random()*dPool.length)]; if(!opts.find(o => o.c === r.c)) opts.push(r); }
     opts.sort(() => Math.random() - 0.5);
-    area.innerHTML = `<div style="text-align:center; margin-bottom:15px; font-weight:bold; color: #64748b;">"${cur.e}"</div>` + 
-        opts.map(o => `<button class="option" data-cyr="${o.c}" onclick="check(this, ${o === cur})"><span class="opt-cyr">${o.c}</span><span class="opt-lat">${o.l}</span></button>`).join('');
+    area.innerHTML = `<div style="text-align:center; margin-bottom:15px; font-weight:bold; color: #64748b;">"${cur.e}"</div>` + opts.map(o => `<button class="option" data-cyr="${o.c}" onclick="check(this, ${o === cur})"><span class="opt-cyr">${o.c}</span><span class="opt-lat">${o.l}</span></button>`).join('');
 }
 
 function check(btn, isCorrect) {
     const curWord = quizPool[quizPool.length - 1];
-    if(isCorrect) {
-        btn.classList.add('correct'); speak(curWord.p); quizPool.pop(); updateProgress(); setTimeout(render, 800);
-    } else {
-        btn.classList.add('wrong');
-        document.querySelectorAll('.option').forEach(b => { if(b.dataset.cyr === curWord.c) b.classList.add('correct'); });
-        speak(curWord.p); const missed = quizPool.pop(); quizPool.unshift(missed); setTimeout(render, 2200);
-    }
+    if(isCorrect) { btn.classList.add('correct'); speak(curWord.p); quizPool.pop(); updateProgress(); setTimeout(render, 800);
+    } else { btn.classList.add('wrong'); document.querySelectorAll('.option').forEach(b => { if(b.dataset.cyr === curWord.c) b.classList.add('correct'); });
+        speak(curWord.p); const missed = quizPool.pop(); quizPool.unshift(missed); setTimeout(render, 2200); }
 }
 
-function speak(p) { 
-    window.speechSynthesis.cancel(); 
-    const m = new SpeechSynthesisUtterance(p.replace(/[^a-zA-Z ]/g, "").toLowerCase()); 
-    m.rate = 0.7; window.speechSynthesis.speak(m); 
-}
+function speak(p) { window.speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(p.replace(/[^a-zA-Z ]/g, "").toLowerCase()); m.rate = 0.7; window.speechSynthesis.speak(m); }
 init();
 </script>
 </body>
