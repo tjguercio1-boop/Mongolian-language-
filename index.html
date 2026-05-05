@@ -6,33 +6,34 @@
     <title>Darhad Lab PRO</title>
     <style>
         :root { --p: #1a2a6c; --a: #f2a154; --s: #2ecc71; --r: #e74c3c; --bg: #f8fafc; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; color: #1e293b; user-select: none; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; color: #1e293b; user-select: none; -webkit-tap-highlight-color: transparent; }
         .app-container { max-width: 500px; margin: auto; display: flex; flex-direction: column; min-height: 100vh; }
-        header { background: var(--p); color: white; padding: 20px 15px; text-align: center; border-radius: 0 0 25px 25px; }
+        header { background: var(--p); color: white; padding: 20px 15px; text-align: center; border-radius: 0 0 25px 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .day-scroller { display: flex; overflow-x: auto; gap: 8px; padding: 15px; scrollbar-width: none; }
-        .day-card { min-width: 45px; height: 45px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #e2e8f0; cursor: pointer; color: #64748b; }
-        .day-card.active { background: var(--a); color: white; border-color: var(--a); transform: scale(1.1); }
+        .day-scroller::-webkit-scrollbar { display: none; }
+        .day-card { min-width: 45px; height: 45px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 1px solid #e2e8f0; cursor: pointer; transition: 0.3s; color: #64748b; }
+        .day-card.active { background: var(--a); color: white; border-color: var(--a); transform: scale(1.1); box-shadow: 0 4px 8px rgba(242, 161, 84, 0.4); }
         .day-card.completed { border: 2px solid var(--s); color: var(--s); }
         .nav-tabs { display: flex; padding: 0 15px 15px; gap: 10px; }
-        .tab { flex: 1; padding: 12px; background: #e2e8f0; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; }
+        .tab { flex: 1; padding: 12px; background: #e2e8f0; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; font-size: 14px; }
         .tab.active { background: var(--p); color: white; }
         .main-card { flex-grow: 1; background: white; margin: 0 15px 15px; border-radius: 24px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; overflow: hidden; }
-        .progress-section { margin-bottom: 15px; background: #f1f5f9; padding: 12px; border-radius: 16px; }
+        .progress-section { margin-bottom: 15px; background: #f1f5f9; padding: 12px; border-radius: 16px; border: 1px solid #e2e8f0; }
         .progress-label { font-size: 9px; font-weight: 800; text-transform: uppercase; color: #64748b; display: flex; justify-content: space-between; margin-bottom: 4px; }
         .progress-container { width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
         .progress-bar { height: 100%; background: var(--s); width: 0%; transition: 0.4s; }
         .course-bar { background: var(--p); }
-        .word-list { overflow-y: auto; flex-grow: 1; }
+        .word-list { overflow-y: auto; flex-grow: 1; padding-bottom: 20px; }
         .word-item { padding: 12px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; }
         .cyr { font-size: 20px; font-weight: bold; color: var(--p); }
         .lat { font-size: 12px; color: #64748b; }
         .eng { font-size: 13px; font-style: italic; color: #475569; }
-        .play-btn { background: #f1f5f9; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
-        .option { width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 16px; border: 2px solid #f1f5f9; background: white; text-align: left; cursor: pointer; }
+        .play-btn { background: #f1f5f9; border: none; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; font-size: 18px; }
+        .option { width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 16px; border: 2px solid #f1f5f9; background: white; text-align: left; transition: 0.2s; cursor: pointer; outline: none; }
         .option .opt-cyr { font-size: 18px; font-weight: bold; display: block; }
-        .option .opt-lat { font-size: 11px; color: #64748b; }
-        .option.correct { background: var(--s) !important; color: white !important; }
-        .option.wrong { background: var(--r) !important; color: white !important; }
+        .option .opt-lat { font-size: 11px; color: #64748b; font-weight: bold; }
+        .option.correct { background: var(--s) !important; color: white !important; border-color: var(--s) !important; }
+        .option.wrong { background: var(--r) !important; color: white !important; border-color: var(--r) !important; }
     </style>
 </head>
 <body>
@@ -59,37 +60,30 @@
 <script>
 const syllabus = {
     1: { t: "Day 1: Letters A-П", w: [
-        {c:"А а", l:"A", p:"ah", e:"Father"}, {c:"Б б", l:"B", p:"beh", e:"Ball"}, {c:"В в", l:"V", p:"wah", e:"Water"}, {c:"Г г", l:"G", p:"gah", e:"Go"}, {c:"Д д", l:"D", p:"deh", e:"Dog"}, {c:"Е е", l:"Ye", p:"yeh", e:"Yes"}, {c:"Ё ё", l:"Yo", p:"yaw", e:"Yore"}, {c:"Ж ж", l:"J", p:"jah", e:"Just"}, {c:"З з", l:"Z", p:"sah", e:"Sun"}, {c: "И и", l: "I", p: "ee", e: "See"}, {c: "Й й", l: "Short I", p: "ee", e: "Boy"}, {c: "К к", l: "K", p: "kah", e: "Kite"}, {c: "Л л", l: "L", p: "ul", e: "Lamp"}, {c: "М м", l: "M", p: "mah", e: "Map"}, {c: "Н н", l: "N", p: "nah", e: "Net"}, {c: "О о", l: "O", p: "aw", e: "Law"}, {c: "Ө ө", l: "Ö", p: "uh", e: "Urn"}, {c: "П п", l: "P", p: "peh", e: "Pet"}
+        {c:"А а",l:"A",p:"ah",e:"Father"},{c:"Б б",l:"B",p:"beh",e:"Ball"},{c:"В в",l:"V",p:"wah",e:"Water"},{c:"Г г",l:"G",p:"gah",e:"Go"},{c:"Д д",l:"D",p:"deh",e:"Dog"},{c:"Е е",l:"Ye",p:"yeh",e:"Yes"},{c:"Ё ё",l:"Yo",p:"yaw",e:"Yore"},{c:"Ж ж",l:"J",p:"jah",e:"Just"},{c:"З з",l:"Z",p:"sah",e:"Sun"},{c:"И и",l:"I",p:"ee",e:"See"},{c:"Й й",l:"I (short)",p:"ee",e:"Boy"},{c:"К к",l:"K",p:"kah",e:"Kite"},{c:"Л л",l:"L",p:"ul",e:"Lamp"},{c:"М м",l:"M",p:"mah",e:"Map"},{c:"Н н",l:"N",p:"nah",e:"Net"},{c:"О о",l:"O",p:"aw",e:"Law"},{c:"Ө ө",l:"Ö",p:"uh",e:"Urn"},{c:"П п",l:"P",p:"peh",e:"Pet"}
     ]},
     2: { t: "Day 2: Letters Р-Я", w: [
-        {c:"Р р", l:"R", p:"er", e:"Rolled R"}, {c:"С с", l:"S", p:"sah", e:"Set"}, {c:"Т т", l:"T", p:"teh", e:"Top"}, {c:"У у", l:"U", p:"oo", e:"Moon"}, {c:"Ү ү", l:"Ü", p:"uuee", e:"French 'tu'"}, {c:"Ф ф", l:"F", p:"feh", e:"Fast"}, {c:"Х х", l:"Kh", p:"khah", e:"Loch"}, {c:"Ц ц", l:"Ts", p:"tsah", e:"Cats"}, {c:"Ч ч", l:"Ch", p:"chah", e:"Chip"}, {c:"Ш ш", l:"Sh", p:"shah", e:"Ship"}, {c:"Щ щ", l:"Shch", p:"sh-tch", e:"Compound SH"}, {c:"Ъ ъ", l:"Hard", p:"---", e:"Hard Sign"}, {c:"Ы ы", l:"Y", p:"ee", e: "Silly"}, {c:"Ь ь", l:"Soft", p:"---", e:"Soft Sign"}, {c:"Э э", l:"E", p:"ay", e: "Egg"}, {c:"Ю ю", l:"Yu", p:"yoo", e:"Universe"}, {c:"Я я", l:"Ya", p:"yah", e:"Yard"}
+        {c:"Р р",l:"R",p:"er",e:"Rolled"},{c:"С с",l:"S",p:"sah",e:"Set"},{c:"Т т",l:"T",p:"teh",e:"Top"},{c:"У у",l:"U",p:"oo",e:"Moon"},{c:"Ү ү",l:"Ü",p:"uuee",e:"'Tu' (FR)"},{c:"Ф ф",l:"F",p:"feh",e:"Fast"},{c:"Х х",l:"Kh",p:"khah",e:"Loch"},{c:"Ц ц",l:"Ts",p:"tsah",e:"Cats"},{c:"Ч ч",l:"Ch",p:"chah",e:"Chip"},{c:"Ш ш",l:"Sh",p:"shah",e:"Ship"},{c:"Щ щ",l:"Shch",p:"sh-tch",e:"SHCH"},{c:"Ъ ъ",l:"Hard",p:"---",e:"Hard Marker"},{c:"Ы ы",l:"Y",p:"ee",e:"Silly"},{c:"Ь ь",l:"Soft",p:"---",e:"Soft Marker"},{c:"Э э",l:"E",p:"ay",e:"Egg"},{c:"Ю ю",l:"Yu",p:"yoo",e:"Universe"},{c:"Я я",l:"Ya",p:"yah",e:"Yard"}
     ]},
-    3: { t: "Day 3: Numbers 0-10", w: [
-        {c:"Тэг", l:"Teg", p:"teg", e:"Zero"}, {c:"Нэг", l:"Neg", p:"neg", e:"One"}, {c:"Хоёр", l:"Hoyor", p:"hoy or", e:"Two"}, {c:"Гурав", l:"Gurav", p:"goor av", e:"Three"}, {c:"Дөрөв", l:"Dorov", p:"door uv", e:"Four"}, {c:"Тав", l:"Tav", p:"tav", e:"Five"}, {c:"Зургаа", l: "Zurgaa", p:"soor gah", e:"Six"}, {c:"Долоо", l:"Doloo", p:"doh loh", e:"Seven"}, {c:"Найм", l:"Naim", p:"nyme", e:"Eight"}, {c:"Ес", l:"Yos", p: "yuss", e: "Nine"}, {c:"Арав", l:"Arav", p:"ar av", e:"Ten"}
+    3: { t: "Day 3: Numbers 1-10", w: [
+        {c:"Нэг",l:"1 (neg)",p:"neg",e:"One"},{c:"Хоёр",l:"2 (hoyor)",p:"hoy or",e:"Two"},{c:"Гурав",l:"3 (gurav)",p:"goor av",e:"Three"},{c:"Дөрөв",l:"4 (dorov)",p:"door uv",e:"Four"},{c:"Тав",l:"5 (tav)",p:"tav",e:"Five"},{c:"Зургаа",l:"6 (zurgaa)",p:"soor gah",e:"Six"},{c:"Долоо",l:"7 (doloo)",p:"doh loh",e:"Seven"},{c:"Найм",l:"8 (naim)",p:"nyme",e:"Eight"},{c:"Ес",l:"9 (yos)",p:"yuss",e:"Nine"},{c:"Арав",l:"10 (arav)",p:"ar av",e:"Ten"}
     ]},
-    4: { t: "Day 4: Large Numbers", w: [
-        {c:"Арван нэг", l:"Arvan neg", p:"ar van neg", e:"11"}, {c:"Хори", l:"Hori", p:"hor ee", e:"20"}, {c:"Гуч", l:"Guch", p:"goots", e:"30"}, {c:"Дөч", l:"Doch", p:"dotch", e:"40"}, {c:"Тавь", l:"Tavi", p:"tav ee", e:"50"}, {c:"Зуу", l:"Zuu", p:"soo", e:"100"}, {c:"Мянга", l:"Myanga", p:"myang ah", e:"1000"}, {c:"Төгрөг", l:"Tugrik", p:"toog roog", e:"Currency"}, {c:"Хэд?", l:"Hed?", p:"hed", e:"How much?"}
+    4: { t: "Day 4: Logic & Currency", w: [
+        {c:"Хори",l:"20 (hori)",p:"hor ee",e:"Twenty"},{c:"Гуч",l:"30 (guch)",p:"goots",e:"Thirty"},{c:"Дөч",l:"40 (doch)",p:"dotch",e:"Forty"},{c:"Зуу",l:"100 (zuu)",p:"soo",e:"One hundred"},{c:"Мянга",l:"1000 (myanga)",p:"myang ah",e:"One thousand"},{c:"Төгрөг",l:"Tugrik",p:"toog roog",e:"MNT Currency"},{c:"Хэд?",l:"Hed?", p:"hed",e:"How much?"},{c:"Мөнгө",l:"Money",p:"moon guh",e:"Money"},{c:"Нэмэх",l:"Plus",p:"nem ah",e:"Plus"},{c:"Хасах",l:"Minus",p:"has ah",e:"Minus"}
     ]},
-    5: { t: "Day 5: Nomadic Life", w: [
-        {c:"Морь", l:"Mori", p:"mory", e:"Horse"}, {c:"Хонь", l:"Khoni", p:"hony", e:"Sheep"}, {c:"Ямаа", l:"Yamaa", p:"yah mah", e:"Goat"}, {c:"Үхэр", l:"Ukher", p:"ooh ker", e:"Cow"}, {c:"Сарлаг", l:"Sarlag", p:"sar lag", e:"Yak"}, {c:"Гэр", l:"Ger", p:"ger", e:"Home/Ger"}, {c:"Айраг", l:"Airag", p:"eye rag", e:"Mare's milk"}, {c:"Малчин", l:"Malchin", p:"mal tchin", e:"Herder"}, {c:"Өвс", l:"Ovs", p:"oovss", e:"Grass"}, {c:"Ус", l:"Us", p:"ooss", e:"Water"}
+    12: { t: "Day 12: Taimen Monitoring", w: [
+        {c:"Тул",l:"Tul",p:"tool",e:"River Wolf (Taimen)"},{c:"Урт",l:"Urt",p:"oort",e:"Length"},{c:"Жин",l:"Jin",p:"jin",e:"Weight"},{c:"Тэмдэг",l:"Temdeg",p:"tem deg",e:"Pit Tag"},{c:"Уус",l:"Uus",p:"ooss",e:"Redd (Spawning Bed)"},{c:"Тоолох",l:"Tohloh",p:"toh loh",e:"To Count"},{c:"Хэмжих",l:"Hemji",p:"hem ji",e:"To Measure"},{c:"Дээж",l:"Deej",p:"day j",e:"Sample / Fin Clip"},{c:"Урсгал",l:"Ursgal",p:"oors gal",e:"Current / Flow"},{c:"Завь",l:"Zavy",p:"savy",e:"Boat"},{c:"Тор",l:"Tor",p:"tor",e:"Net"},{c:"Уурга",l:"Oorga",p:"oor gah",e:"Rod (Fly/Spin)"},{c:"Гүн",l:"Goon",p:"goon",e:"Depth"},{c:"Биологич",l:"Biologich",p:"bee o lo gist",e:"Biologist"},{c:"Хамгаалах",l:"Hamgaal",p:"ham gah lah",e:"Protect"},{c:"Эрэг",l:"Ereg",p:"er eg",e:"River Bank"},{c:"Бэлчир",l:"Belchir",p:"bel tchir",e:"Confluence"},{c:"Түрс",l:"Toors",p:"toorss",e:"Fish Eggs"},{c:"Дэгээ",l:"Degee",p:"de gay",e:"Hook"},{c:"Гол",l:"Gol",p:"goal",e:"River"}
+    ]},
+    13: { t: "Day 13: Drone Tech", w: [
+        {c:"Дрон",l:"Dron",p:"drone",e:"Drone"},{c:"Нисэх",l:"Nisekh",p:"nis eh", e:"To Fly"},{c:"Батарей",l:"Bat",p:"bat a ray",e:"Battery"},{c:"Камер",l:"Kamer",p:"kah mer",e:"Camera"},{c:"Дохио",l:"Dokhyo",p:"doh hyo",e:"Signal"},{c:"Өндөр",l:"Ondor",p:"oon door",e:"Altitude"},{c:"Буух",l:"Buukh",p:"booh",e:"Land"},{c:"Хөөрөх",l:"Hooro",p:"hoo ruh",e:"Takeoff"},{c:"Салхи",l:"Salkh",p:"sal hee",e:"Wind"},{c:"ГПС",l:"GPS",p:"gee pee ess",e:"GPS"},{c:"Цэг",l:"Tseg",p:"tsegg",e:"Waypoint"},{c:"Цэнэглэх",l:"Tseneg",p:"tse neg leh",e:"To Charge"},{c:"Удирдах",l:"Udirda",p:"oo dir dah",e:"To Control"},{c:"Видео",l:"Vid",p:"vid yo",e:"Video"},{c:"Автомат",l:"Auto",p:"av to maht",e:"Auto-Pilot"},{c:"Унах",l:"Unakh",p:"oon ah",e:"Crash"},{c:"Сэнс",l:"Sens",p:"senss",e:"Propeller"},{c:"Засах",l:"Zasakh",p:"sas ah",e:"To Fix"},{c:"Хурд",l:"Khurd",p:"hoord",e:"Speed"},{c:"Цэлмэг",l:"Tselme",p:"tsell meg",e:"Clear Sky"}
     ]}
 };
 
-// Auto-populate remaining days with specialized field vocabulary
-const fields = ["Landscape", "Wildlife", "Gear", "Mechanics", "Social", "Food", "Taimen", "Drones", "Ecology", "Maps", "Time", "Law", "Teaching", "Weather", "House", "Finish"];
-fields.forEach((f, i) => {
-    if (!syllabus[i + 6]) {
-        syllabus[i + 6] = { t: `Day ${i + 6}: ${f}`, w: syllabus[5].w.map(word => ({...word})) };
-    }
-});
-
-// Specialized scientific overrides
-syllabus[12].w = [
-    {c:"Тул", l:"Tul", p:"tool", e:"Taimen"}, {c:"Урт", l:"Urt", p:"oort", e:"Length"}, {c:"Жин", l:"Jin", p:"jin", e:"Weight"}, {c:"Тэмдэг", l:"Temdeg", p:"tem deg", e:"Tag"}, {c:"Урсгал", l:"Ursgal", p:"oors gal", e:"Flow"}, {c:"Биологич", l:"Biologich", p:"bee o lo gist", e:"Biologist"}, {c:"Дээж", l:"Deej", p:"day j", e:"Sample"}, {c:"Тор", l:"Tor", p:"tor", e:"Net"}, {c:"Завь", l:"Zavy", p:"savy", e:"Boat"}, {c:"Гол", l:"Gol", p:"goal", e:"River"}
+// Populate the remaining days (5-11, 14-21) with nomadic and field science vocabulary
+const basicVocab = [
+    {c:"Гэр",l:"Ger",p:"ger",e:"Nomadic Home"},{c:"Морь",l:"Mori",p:"mory",e:"Horse"},{c:"Сайн",l:"Sain",p:"sign",e:"Good"},{c:"Баярлалаа",l:"Bayar",p:"byar la la",e:"Thank you"},{c:"Тийм",l:"Tiim",p:"team",e:"Yes"},{c:"Үгүй",l:"Ugui",p:"oog way",e:"No"},{c:"За",l:"Za",p:"sah",e:"Okay"},{c:"Ус",l:"Us",p:"ooss",e:"Water"},{c:"Сүү",l:"Suu",p:"soo",e:"Milk"},{c:"Ташуур",l:"Tashuur",p:"tah shoor",e:"Whip"},{c:"Уул",l:"Ool",p:"ool",e:"Mountain"},{c:"Тал",l:"Tal",p:"tal",e:"Steppe"},{c:"Зам",l:"Zam",p:"sahm",e:"Path / Road"},{c:"Хот",l:"Khot",p:"hot",e:"City"},{c:"Ой",l:"Oi",p:"oy",e:"Forest"},{c:"Тэнгэр",l:"Teng",p:"ten ger",e:"Sky"},{c:"Наран",l:"Naran",p:"nah rahn",e:"Sun"},{c:"Саран",l:"Saran",p:"sah rahn",e:"Moon"},{c:"Хүйтэн",l:"Huit",p:"hwee ten",e:"Cold"},{c:"Дулаан",l:"Dulaan",p:"doo lahn",e:"Warm"}
 ];
-syllabus[13].w = [
-    {c:"Дрон", l:"Dron", p:"drone", e:"Drone"}, {c:"Нисэх", l:"Nisekh", p:"nis eh", e:"Fly"}, {c:"Батарей", l:"Bat", p:"bat a ray", e:"Battery"}, {c:"Камер", l:"Kamer", p:"kah mer", e:"Camera"}, {c:"Дохио", l:"Dokhyo", p:"doh hyo", e:"Signal"}, {c:"Өндөр", l:"Ondor", p:"oon door", e:"Altitude"}, {c:"Буух", l:"Buukh", p:"booh", e:"Land"}, {c:"Салхи", l:"Salkh", p:"sal hee", e:"Wind"}, {c:"ГПС", l:"GPS", p:"gee pee ess", e:"GPS"}, {c:"Цэг", l:"Tseg", p:"tsegg", e:"Point"}
-];
+for(let i=1; i<=21; i++) { if(!syllabus[i]) syllabus[i] = { t: `Day ${i}: Field Ops`, w: basicVocab.map(v => ({...v})) }; }
 
 let completedDays = JSON.parse(localStorage.getItem('darhad_complete')) || [];
 let currentDay = parseInt(localStorage.getItem('darhad_day')) || 1;
@@ -131,7 +125,7 @@ function render() {
     } else {
         if(!quizPool.length) {
             if(!completedDays.includes(currentDay)) { completedDays.push(currentDay); localStorage.setItem('darhad_complete', JSON.stringify(completedDays)); renderDayPicker(); }
-            area.innerHTML = `<div style="text-align:center;padding:40px;"><h2>Day ${currentDay} Complete!</h2><button class="option" onclick="switchMode('quiz')">Restart</button></div>`;
+            area.innerHTML = `<div style="text-align:center;padding:40px;"><h2>Expedition Mastery!</h2><button class="option" onclick="switchMode('quiz')">Restart Session</button></div>`;
             return;
         }
         const cur = quizPool[quizPool.length-1];
@@ -139,14 +133,22 @@ function render() {
         let opts = [cur];
         while(opts.length<4) { let r=dPool[Math.floor(Math.random()*dPool.length)]; if(!opts.find(o=>o.c===r.c)) opts.push(r); }
         opts.sort(()=>Math.random()-0.5);
-        area.innerHTML = `<div style="text-align:center;margin-bottom:15px;font-weight:bold;color:#64748b;">"${cur.e}"</div>` + opts.map(o => `<button class="option" onclick="check(this, ${o===cur})"><span class="opt-cyr">${o.c}</span><span class="opt-lat">${o.l}</span></button>`).join('');
+        area.innerHTML = `<div style="text-align:center;margin-bottom:15px;font-weight:bold;color:#64748b;">"${cur.e}"</div>` + opts.map(o => `<button class="option" data-cyr="${o.c}" onclick="check(this, ${o===cur})"><span class="opt-cyr">${o.c}</span><span class="opt-lat">${o.l}</span></button>`).join('');
     }
 }
 
 function check(btn, isCorrect) {
     const cur = quizPool[quizPool.length-1];
-    if(isCorrect) { btn.classList.add('correct'); speak(cur.p); quizPool.pop(); updateProgress(); setTimeout(render, 800); }
-    else { btn.classList.add('wrong'); speak(cur.p); const missed=quizPool.pop(); quizPool.unshift(missed); setTimeout(render, 2000); }
+    if(isCorrect) {
+        btn.classList.add('correct'); speak(cur.p); quizPool.pop(); updateProgress(); setTimeout(render, 800);
+    } else {
+        btn.classList.add('wrong');
+        // Finalized highlight logic: find the correct button and highlight it
+        document.querySelectorAll('.option').forEach(b => {
+            if(b.getAttribute('data-cyr') === cur.c) b.classList.add('correct');
+        });
+        speak(cur.p); const missed=quizPool.pop(); quizPool.unshift(missed); setTimeout(render, 2200);
+    }
 }
 
 function speak(p) { window.speechSynthesis.cancel(); const m=new SpeechSynthesisUtterance(p.replace(/[^a-zA-Z ]/g,"")); m.rate=0.7; window.speechSynthesis.speak(m); }
